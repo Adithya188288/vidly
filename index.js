@@ -1,5 +1,4 @@
 const express = require("express")
-const Joi = require("@hapi/joi")
 const genres = require("./routes/genres")
 const morgan = require("morgan")
 const helmet = require("helmet")
@@ -15,7 +14,7 @@ app.use(express.urlencoded())
 app.use(express.static("./public")) // any document under public accesible when the server starts
 app.get("env") === "development" && app.use(morgan("tiny")) // al
 app.use("/api/genres", genres)
-console.log(process.env)
+// console.log(process.env)
 
 const port = process.env.PORT || 3000
 
