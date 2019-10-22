@@ -1,6 +1,8 @@
 const express = require("express")
 const genres = require("./routes/genres")
 const customers = require("./routes/customers")
+const movies = require("./routes/movies")
+const rentals = require("./routes/rentals")
 const morgan = require("morgan")
 const helmet = require("helmet")
 const mongoose = require("mongoose") //Easy to use API to interact with mongoDb
@@ -23,6 +25,8 @@ app.use(express.static("./public")) // any document under public accesible when 
 app.get("env") === "development" && app.use(morgan("tiny")) // al
 app.use("/api/genres", genres)
 app.use("/api/customers", customers)
+app.use("/api/movies", movies)
+app.use("/api/rentals", rentals)
 // console.log(process.env)
 
 const port = process.env.PORT || 3000

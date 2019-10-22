@@ -23,3 +23,4 @@ validateGenre = genre => {
 
 exports.validateGenre = validateGenre
 exports.Genres = Genres
+exports.genreSchema = genreSchema
