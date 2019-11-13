@@ -1,6 +1,7 @@
 const express = require("express")
 const app = express()
 const { logger } = require("./startup/logger")
+const config = require("config")
 
 // Registering listeners
 
@@ -14,10 +15,12 @@ require("./startup/routes")(app)
 require("./startup/db")()
 require("./startup/config")()
 require("./startup/validation")()
-require("./startup/prod.js")(app)
 
 
-const port = process.env.PORT || 3000
+if ((config.get("NODE_ENV") === 'production') && require("./startup/prod.js")(app))
+
+
+  const port = process.env.PORT || 3000
 
 const server = app.listen(port, () => {
   logger.info(`Server Started in port ${port}.... `)
