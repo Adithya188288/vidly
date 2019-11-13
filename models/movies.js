@@ -38,7 +38,7 @@ validateMovie = movie => {
       .required()
       .min(1)
       .max(255),
-    genre: Joi.string().required(),
+    genre: Joi.objectId().required(),
     numberInStock: Joi.number()
       .required()
       .min(0)
@@ -52,5 +52,12 @@ validateMovie = movie => {
   return schema.validate(movie)
 }
 
+validateId = id => {
+  console.log(id)
+  const schema = Joi.objectId().required()
+  return schema.validate(id)
+}
+
 exports.Movies = Movies
 exports.validateMovie = validateMovie
+exports.validateId = validateId

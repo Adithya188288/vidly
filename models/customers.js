@@ -28,5 +28,11 @@ const validateCustomer = customer => {
   return schema.validate(customer)
 }
 
+const validateId = id => {
+  const schema = Joi.objectId().required()
+  return schema.validate(id)
+}
+
 exports.validateCustomer = validateCustomer
+exports.validateId = validateId
 exports.Customers = Customers

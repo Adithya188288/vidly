@@ -1,5 +1,7 @@
 const mongoose = require("mongoose")
 const Joi = require("@hapi/joi")
+const moment = require("moment")
+
 
 const rentalSchema = new mongoose.Schema({
   customer: {
@@ -54,16 +56,43 @@ const rentalSchema = new mongoose.Schema({
   }
 })
 
+//Encasulating the logic within the schema - Information Expert Principle 
+
+//Any logic that calculates the state of the object properties should be encapsulated with the object itself
+
+rentalSchema.methods.returns = function () {
+
+  this.dateReturned = new Date()
+  const rentalDays = moment().diff(this.dateOut, 'days')
+  this.rentalFee = rentalDays * this.movie.dailyRentalRate
+}
+
+
+rentalSchema.statics.lookup = function (customerID, movieID) {
+
+  return this.findOne({
+    'customer._id': customerID,
+    'movie._id': movieID
+  })
+
+}
+
 const Rentals = mongoose.model("Rental", rentalSchema)
 
 const validateRental = rental => {
   const schema = Joi.object({
-    movieId: Joi.string().required(),
-    customerId: Joi.string().required()
+    movieId: Joi.objectId().required(),
+    customerId: Joi.objectId().required()
   })
 
   return schema.validate(rental)
 }
 
+const validateId = Id => {
+  const schema = Joi.objectId().required()
+  return schema.validate(Id)
+}
+
+exports.validateId = validateId
 exports.validateRental = validateRental
 exports.Rentals = Rentals

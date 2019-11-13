@@ -1,6 +1,13 @@
 const express = require("express")
 const router = express.Router()
-const { Customers, validateCustomer } = require("../models/customers")
+const {
+  Customers,
+  validateCustomer,
+  validateId
+} = require("../models/customers")
+const auth = require("../middleware/auth")
+const isAdmin = require("../middleware/isAdmin")
+
 //get all customers
 router.get("/", async (req, res) => {
   const customers = await Customers.find().sort("name")
@@ -11,6 +18,9 @@ router.get("/", async (req, res) => {
 
 //get a customer
 router.get("/:id", async (req, res) => {
+  const { error } = validateId(req.params.id)
+  if (error) return res.status(400).send("Please Provide a valid ID")
+
   const customer = await Customers.findById(req.params.id)
   if (!customer)
     return res.status(404).send("The specified resource does not exists")
@@ -18,7 +28,7 @@ router.get("/:id", async (req, res) => {
 })
 
 //Add a customer
-router.post("/", async (req, res) => {
+router.post("/", auth, async (req, res) => {
   const { error } = validateCustomer(req.body)
   if (error) return res.status(400).send(error.details[0].message)
 
@@ -33,7 +43,7 @@ router.post("/", async (req, res) => {
 })
 
 //update a customer
-router.put("/:id", async (req, res) => {
+router.put("/:id", auth, async (req, res) => {
   const { error } = validateCustomer(req.body)
   if (error) return res.status(400).send(error.details[0].message)
 
@@ -54,7 +64,10 @@ router.put("/:id", async (req, res) => {
 })
 
 //delete a customer
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", [auth, isAdmin], async (req, res) => {
+  const { error } = validateId(req.params.id)
+  if (error) return res.status(400).send("Please Provide a valid ID")
+
   const customer = await Customers.findByIdAndRemove(req.params.id)
   if (!customer)
     return res.status(404).send("The specified resource does not exists")

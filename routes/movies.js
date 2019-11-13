@@ -1,7 +1,9 @@
 const express = require("express")
 const router = express.Router()
 const { Genres } = require("../models/genres")
-const { Movies, validateMovie } = require("../models/movies")
+const { Movies, validateMovie, validateId } = require("../models/movies")
+const auth = require("../middleware/auth")
+const isAdmin = require("../middleware/isAdmin")
 
 //Get All Movies
 router.get("/", async (req, res) => {
@@ -13,6 +15,9 @@ router.get("/", async (req, res) => {
 //Get a Movie
 
 router.get("/:id", async (req, res) => {
+  const { error } = validateId(req.params.id)
+  if (error) return res.status(400).send("Please provide a valid Id")
+
   const movie = await Movies.findById(req.params.id)
   if (!movie) return res.status(404).send("No Movie with the provided Id found")
 
@@ -20,7 +25,7 @@ router.get("/:id", async (req, res) => {
 })
 
 //Add a movie
-router.post("/", async (req, res) => {
+router.post("/", auth, async (req, res) => {
   console.log(req.body)
   let newMovie = null
   try {
@@ -51,7 +56,7 @@ router.post("/", async (req, res) => {
   return res.status(200).send(newMovie)
 })
 
-router.put("/:id", async (req, res) => {
+router.put("/:id", auth, async (req, res) => {
   const { error } = validateMovie(req.body)
   if (error) return res.status(400).send(error.details[0].message)
 
@@ -78,7 +83,10 @@ router.put("/:id", async (req, res) => {
 })
 
 //Delete a Movie
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", [auth, isAdmin], async (req, res) => {
+  const { error } = validateId(req.params.id)
+  if (error) return res.status(400).send("Please provide a valid Id")
+
   const movie = await Movies.findByIdAndRemove(req.params.id)
   if (!movie) return res.status(404).send("Invalid Movie Id ")
   return res.send(movie)

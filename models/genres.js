@@ -3,7 +3,7 @@ const Joi = require("@hapi/joi")
 
 //Create a mogoose scheme
 const genreSchema = new mongoose.Schema({
-  name: { type: String, required: true }
+  name: { type: String, required: true, minlength: 5, maxlength: 50 }
 })
 
 //Create a mongoose model
@@ -15,12 +15,21 @@ const Genres = mongoose.model("Genre", genreSchema)
 validateGenre = genre => {
   console.log("Validating Genre....")
   const schema = Joi.object({
-    name: Joi.string().required()
+    name: Joi.string()
+      .required()
+      .min(5)
+      .max(50)
   })
 
   return schema.validate(genre)
 }
 
+const validateId = id => {
+  const schema = Joi.objectId().required()
+  return schema.validate(id)
+}
+
+exports.validateId = validateId
 exports.validateGenre = validateGenre
 exports.Genres = Genres
 exports.genreSchema = genreSchema
