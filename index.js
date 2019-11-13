@@ -1,6 +1,6 @@
 const express = require("express")
 const app = express()
-const { logger } = require("../vidly/startup/logger")
+const { logger } = require("./startup/logger")
 
 // Registering listeners
 
