@@ -17,7 +17,7 @@ require("./startup/config")()
 require("./startup/validation")()
 
 
-if ((config.get("NODE_ENV") === 'production')) {
+if ((config.get("environment") === "production")) {
   require("./startup/prod.js")(app)
 }
 
