@@ -18,7 +18,7 @@ require("./startup/validation")()
 
 console.log(config.get("environment"))
 
-if ((config.get("environment") === "production")) {
+if (config.get("environment") === "production") {
   require("./startup/prod.js")(app)
 }
 
