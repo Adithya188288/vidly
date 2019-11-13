@@ -17,10 +17,12 @@ require("./startup/config")()
 require("./startup/validation")()
 
 
-if ((config.get("NODE_ENV") === 'production') && require("./startup/prod.js")(app))
+if ((config.get("NODE_ENV") === 'production'){
+  require("./startup/prod.js")(app))
+}
 
 
-  const port = process.env.PORT || 3000
+const port = process.env.PORT || 3000
 
 const server = app.listen(port, () => {
   logger.info(`Server Started in port ${port}.... `)
